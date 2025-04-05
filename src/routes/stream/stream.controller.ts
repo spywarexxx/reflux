@@ -2,7 +2,7 @@ import { EnvService } from '@/config/env.service';
 import { TooManyRequestsException } from '@/exceptions/too-many-requests.exception';
 import { StreamService } from '@/routes/stream/stream.service';
 import { proxify } from '@/utils/proxy';
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Controller, Get, Head, Param, Res } from '@nestjs/common';
 import type { Response } from 'express';
 
 @Controller('/stream')
@@ -55,6 +55,11 @@ export class StreamController {
         url: this.streamService.formatUrl(stream.url),
       })),
     };
+  }
+
+  @Head('/watch/:id')
+  public async getWatch(@Res() res: Response) {
+    return res.status(200).end();
   }
 
   /**
