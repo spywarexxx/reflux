@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Audio {
+  UNKNOWN
+  DUBBED
+  SUBTITLED
+  NATIONAL
+  MUTED
+}
+
+enum Quality {
+  UNKNOWN
+  STANDARD_DEFINITION
+  HIGH_DEFINITION
+  FULL_HIGH_DEFINITION
+  ULTRA_HIGH_DEFINITION
+}
+
+model Movie {
+  id             String    @id @unique @default(cuid())
+  imdb_id        String?   @unique
+  tmdb_id        Int?      @unique
+  backdrop_url   String?
+  poster_url     String?
+  adult          Boolean?
+  title          String
+  original_title String?
+  overview       String?
+  language       String?
+  rating         Float?
+  release_date   DateTime?
+  genres         Genre[]
+  streams        Stream[]
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
+
+  @@map("movies")
+}
+
+model Series {
+  id             String    @id @unique @default(cuid())
+  imdb_id        String?   @unique
+  tmdb_id        Int?      @unique
+  backdrop_url   String?
+  poster_url     String?
+  adult          Boolean?
+  title          String
+  original_title String?
+  overview       String?
+  language       String?
+  rating         Float?
+  release_date   DateTime?
+  genres         Genre[]
+  streams        Stream[]
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
+
+  @@map("series")
+}
+
+model Genre {
+  id         Int      @id @unique
+  name       String
+  movies     Movie[]
+  series     Series[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("genres")
+}
+
+model Stream {
+  id         String   @id @unique @default(cuid())
+  url        String
+  audio      Audio
+  quality    Quality
+  movie      Movie?   @relation(fields: [movie_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  movie_id   String?
+  series     Series?  @relation(fields: [series_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  series_id  String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("streams")
+}

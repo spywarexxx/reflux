@@ -1,11 +1,11 @@
-import { EnvModule } from '@/config/env.module';
+import { EnvModule } from '@/modules/env/env.module';
+import { PrometheusModule } from '@/modules/prometheus/prometheus.module';
 import { ManifestController } from '@/routes/manifest/manifest.controller';
-import { ManifestService } from '@/routes/manifest/manifest.service';
 import { Module } from '@nestjs/common';
 
 @Module({
-  imports: [EnvModule],
+  imports: [PrometheusModule, EnvModule],
   controllers: [ManifestController],
-  providers: [ManifestService],
+  providers: [],
 })
 export class ManifestModule {}
