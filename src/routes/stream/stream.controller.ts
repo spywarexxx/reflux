@@ -2,7 +2,13 @@ import { convertToId } from '@/modules/prisma/utils/string';
 import { ProxyService } from '@/modules/proxy/proxy.service';
 import { StreamService } from '@/routes/stream/stream.service';
 import { redoHash, undoHash } from '@/utils/string';
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Param,
+  Res,
+} from '@nestjs/common';
 import { Response } from 'express';
 @Controller('/stream')
 export class StreamController {
@@ -18,6 +24,13 @@ export class StreamController {
     const coerceId = convertToId(id);
     const coerceSeason = !Number.isNaN(Number(season)) ? Number(season) : 0;
     const coerceEpisode = !Number.isNaN(Number(episode)) ? Number(episode) : 0;
+
+    if (
+      coerceId < Number.MIN_SAFE_INTEGER ||
+      coerceId > Number.MAX_SAFE_INTEGER
+    ) {
+      throw new BadRequestException();
+    }
 
     const streams = await this.streamService.getStreams(
       coerceId,
