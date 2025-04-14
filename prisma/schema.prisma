@@ -7,86 +7,64 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Type {
+  MOVIE
+  TV
+}
+
 enum Audio {
   UNKNOWN
   DUBBED
   SUBTITLED
-  NATIONAL
-  MUTED
+  ORIGINAL
 }
 
 enum Quality {
   UNKNOWN
-  STANDARD_DEFINITION
-  HIGH_DEFINITION
-  FULL_HIGH_DEFINITION
-  ULTRA_HIGH_DEFINITION
-}
-
-model Movie {
-  id             String    @id @unique @default(cuid())
-  imdb_id        String?   @unique
-  tmdb_id        Int?      @unique
-  backdrop_url   String?
-  poster_url     String?
-  adult          Boolean?
-  title          String
-  original_title String?
-  overview       String?
-  language       String?
-  rating         Float?
-  release_date   DateTime?
-  genres         Genre[]
-  streams        Stream[]
-  created_at     DateTime  @default(now())
-  updated_at     DateTime  @updatedAt
-
-  @@map("movies")
-}
-
-model Series {
-  id             String    @id @unique @default(cuid())
-  imdb_id        String?   @unique
-  tmdb_id        Int?      @unique
-  backdrop_url   String?
-  poster_url     String?
-  adult          Boolean?
-  title          String
-  original_title String?
-  overview       String?
-  language       String?
-  rating         Float?
-  release_date   DateTime?
-  genres         Genre[]
-  streams        Stream[]
-  created_at     DateTime  @default(now())
-  updated_at     DateTime  @updatedAt
-
-  @@map("series")
+  SD
+  HD
+  FHD
+  UHD
 }
 
 model Genre {
-  id         Int      @id @unique
-  name       String
-  movies     Movie[]
-  series     Series[]
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id        Int      @id @unique
+  name      String
+  infos     Info[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("genres")
 }
 
+model Info {
+  id          Int      @id @unique
+  type        Type
+  title       String
+  description String
+  thumbnail   String
+  poster      String
+  rating      Float
+  genres      Genre[]
+  streams     Stream[]
+  releasedAt  DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([title])
+  @@map("infos")
+}
+
 model Stream {
-  id         String   @id @unique @default(cuid())
-  url        String
-  audio      Audio
-  quality    Quality
-  movie      Movie?   @relation(fields: [movie_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  movie_id   String?
-  series     Series?  @relation(fields: [series_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  series_id  String?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id        String   @id @unique @default(cuid())
+  provider  String
+  url       String   @unique
+  audio     Audio
+  quality   Quality
+  info      Info     @relation(fields: [infoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  infoId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("streams")
 }

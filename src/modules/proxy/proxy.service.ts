@@ -5,32 +5,22 @@ import { Injectable } from '@nestjs/common';
 export class ProxyService {
   public constructor(private readonly envService: EnvService) {}
 
-  public bypass(target: string) {
-    const api = this.envService.get('API_URL');
-    return api.concat(target);
+  public byPass(url: string, path: string = undefined): string {
+    const base = this.envService.get('APP_URL');
+    const uri = [base, path, url].filter(Boolean).join('/');
+
+    return uri;
   }
 
-  public stream(target: string) {
-    const proxy = this.envService.get('STREAM_PROXY_URL');
+  public passThrough(url: string): string {
+    const searchParams = new URLSearchParams();
 
-    if (proxy) {
-      return proxy.concat(encodeURIComponent(target));
-    }
+    searchParams.set('url', url);
 
-    return target;
-  }
+    const params = searchParams.toString();
+    const base = this.envService.get('PROXY_URL');
+    const uri = `${base}?${params}`;
 
-  public image(target: string) {
-    const proxy = this.envService.get('IMAGE_PROXY_URL');
-
-    if (proxy) {
-      return proxy.concat(encodeURIComponent(target));
-    }
-
-    return target;
-  }
-
-  public fallbackVideo() {
-    return this.stream(this.envService.get('VIDEO_PROXY_FALLBACK_URL'));
+    return uri;
   }
 }

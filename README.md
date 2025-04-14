@@ -2,7 +2,7 @@
 
 # Reflux - Stremio Addon
 
-Reflux is a Stremio addon that allows users to access the catalog of the **Rede Canais** website, providing a quick and easy way to watch all the available content.
+Reflux is a Stremio addon that allows users to access a huge catalog of movies and tv shows, providing a quick and easy way to watch wherever you are!
 
 ## Installation
 
@@ -12,7 +12,7 @@ To install the Reflux addon, simply add the following link to your Stremio addon
 
 ## Features
 
-- Access all available content from the **Rede Canais** website.
+- Access to a huge content from the **Rede Canais**, **Vizer (upcoming)** and several websites!
 - Enjoy a seamless and simple way to watch your favorite shows and movies.
 
 ## Contributing

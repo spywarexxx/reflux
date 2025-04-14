@@ -1,0 +1,6 @@
+export enum Audio {
+  UNKNOWN = 'UNKNOWN',
+  DUBBED = 'DUBBED',
+  SUBTITLED = 'SUBTITLED',
+  ORIGINAL = 'ORIGINAL',
+}
