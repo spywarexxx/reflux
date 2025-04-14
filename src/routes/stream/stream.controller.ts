@@ -26,8 +26,8 @@ export class StreamController {
     const coerceEpisode = !Number.isNaN(Number(episode)) ? Number(episode) : 0;
 
     if (
-      coerceId < Number.MIN_SAFE_INTEGER ||
-      coerceId > Number.MAX_SAFE_INTEGER
+      coerceId < -2147483648 ||
+      coerceId > 2147483647
     ) {
       throw new BadRequestException();
     }
