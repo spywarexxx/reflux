@@ -3,11 +3,10 @@ import { ProxyService } from '@/modules/proxy/proxy.service';
 import { StreamService } from '@/routes/stream/stream.service';
 import { redoHash, undoHash } from '@/utils/string';
 import {
-  BadRequestException,
   Controller,
   Get,
   Param,
-  Res,
+  Res
 } from '@nestjs/common';
 import { Response } from 'express';
 @Controller('/stream')
@@ -24,14 +23,6 @@ export class StreamController {
     const coerceId = convertToId(id);
     const coerceSeason = !Number.isNaN(Number(season)) ? Number(season) : 0;
     const coerceEpisode = !Number.isNaN(Number(episode)) ? Number(episode) : 0;
-
-    if (
-      coerceId < -2147483648 ||
-      coerceId > 2147483647
-    ) {
-      throw new BadRequestException();
-    }
-
     const streams = await this.streamService.getStreams(
       coerceId,
       coerceSeason,

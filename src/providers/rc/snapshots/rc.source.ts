@@ -100,7 +100,7 @@ export class RcSource extends Snapshot {
       body: `rctoken=${encodeURIComponent(source.token)}`,
     });
 
-    const vodMatch = html.match(/const\s+VID_URL\s*=\s*["']([^"']+)["']/);
+    const vodMatch = html?.match(/const\s+VID_URL\s*=\s*["']([^"']+)["']/);
 
     if (!vodMatch) {
       throw new Error('VOD URL not found in stream response');
