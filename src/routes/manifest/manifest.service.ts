@@ -25,13 +25,16 @@ export class ManifestService {
                 options: [],
                 optionsLimit: 1,
               },
-              {
+            ];
+
+            if (trending === TrendingType.ALL) {
+              extra.push({
                 name: 'search',
                 isRequired: false,
                 options: [],
                 optionsLimit: 1,
-              },
-            ];
+              });
+            }
 
             switch (type) {
               case 'movie':
