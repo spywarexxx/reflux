@@ -11,7 +11,7 @@ export class ManifestController {
   ) {}
 
   @Get('/')
-  public async getManifest() {
+  public async get(): Promise<any> {
     const catalogs = await this.manifestService.getCatalogs();
 
     return {
@@ -23,12 +23,12 @@ export class ManifestController {
       resources: ['catalog', 'meta', 'stream'],
       idPrefixes: ['reflux'],
       types: ['movie', 'series'],
-      catalogs,
       stremioAddonsConfig: {
         issuer: 'https://stremio-addons.net',
         signature:
           'eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..7zICmCSHsqJFg-mhePjRZA.BL8Er2HpSDYpLE51lPOkWmLnACgg4HFHe8IQgkDKz5nlU0FOhZoOsownvYPAmMbpZmFy4_WZCSfPHyw38om27jIomGds-mdQeRnCFMRrp4I4vuTNSSBpX3vyvQAYThyM.FuCigw9HEIZ3jvMKmhlwrg',
       },
+      catalogs,
     };
   }
 }

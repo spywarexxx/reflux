@@ -1,18 +1,13 @@
-import { convertToType } from '@/modules/prisma/utils/string';
-import { convertToTrending } from '@/modules/trending/utils/string';
-import { CatalogService } from '@/routes/catalog/catalog.service';
-import { Controller, Get, Param } from '@nestjs/common';
+import { ProvidersTrendingService } from '@/modules/providers/services/trending.service';
+import { StremioService } from '@/modules/stremio/stremio.service';
+import { BadRequestException, Controller, Get, Param } from '@nestjs/common';
 
 @Controller('/catalog')
 export class CatalogController {
-  private readonly response = {
-    hasMore: true,
-    cacheMaxAge: 0,
-    staleError: 0,
-    staleRevalidate: 0,
-  };
-
-  public constructor(private readonly catalogService: CatalogService) {}
+  public constructor(
+    private readonly providersTrendingService: ProvidersTrendingService,
+    private readonly stremioService: StremioService,
+  ) {}
 
   @Get([
     '/:category/reflux.:section.json',
@@ -26,24 +21,31 @@ export class CatalogController {
     const query = new URLSearchParams(params);
     const coerce = Number(query.get('skip'));
 
+    const type =
+      this.providersTrendingService.convertStringToContentType(category);
+    const trending =
+      this.providersTrendingService.convertStringToTrending(section);
+
     const search = query.get('search');
-    const skip = !Number.isNaN(coerce) && coerce >= 0 ? coerce : 0;
+    const skip = !Number.isNaN(coerce) && coerce >= 0 ? coerce : null;
     const genre = query.get('genre');
 
-    const type = convertToType(category);
-    const trending = convertToTrending(section);
-
-    const catalog = await this.catalogService.getCatalog(
-      type,
-      trending,
-      search,
-      skip,
-      genre,
-    );
+    if (!type || !trending) {
+      throw new BadRequestException();
+    }
 
     return {
-      ...this.response,
-      metas: catalog,
+      hasMore: true,
+      cacheMaxAge: 0,
+      staleError: 0,
+      staleRevalidate: 0,
+      metas: await this.stremioService.getCatalog({
+        type,
+        trending,
+        search,
+        genre,
+        skip,
+      }),
     };
   }
 }

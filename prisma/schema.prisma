@@ -7,9 +7,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Type {
-  MOVIE
-  TV
+enum Provider {
+  REDECANAIS
+  VIZER
 }
 
 enum Audio {
@@ -27,44 +27,92 @@ enum Quality {
   UHD
 }
 
-model Genre {
-  id        Int      @id @unique
-  name      String
-  infos     Info[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("genres")
-}
-
-model Info {
-  id          Int      @id @unique
-  type        Type
+model Movie {
+  id          Int           @id @unique
   title       String
   description String
   thumbnail   String
   poster      String
   rating      Float
-  genres      Genre[]
-  streams     Stream[]
+  genres      MovieGenre[]
+  streams     MovieStream[]
   releasedAt  DateTime
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   @@index([title])
-  @@map("infos")
+  @@map("movies")
 }
 
-model Stream {
-  id        String   @id @unique @default(cuid())
-  provider  String
-  url       String   @unique
-  audio     Audio
-  quality   Quality
-  info      Info     @relation(fields: [infoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  infoId    Int
+model Series {
+  id          Int            @id @unique
+  title       String
+  description String
+  thumbnail   String
+  poster      String
+  rating      Float
+  genres      SeriesGenre[]
+  streams     SeriesStream[]
+  releasedAt  DateTime
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([title])
+  @@map("series")
+}
+
+model MovieGenre {
+  id        Int      @id @unique
+  name      String
+  movies    Movie[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("streams")
+  @@index([name])
+  @@map("movie_genres")
+}
+
+model SeriesGenre {
+  id        Int      @id @unique
+  name      String
+  series    Series[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@map("series_genres")
+}
+
+model MovieStream {
+  id         String   @id @unique @default(cuid())
+  provider   Provider
+  refreshUrl String
+  accessUrl  String?
+  audio      Audio
+  quality    Quality
+  movie      Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  movieId    Int
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("movie_streams")
+}
+
+model SeriesStream {
+  id         String   @id @unique @default(cuid())
+  provider   Provider
+  refreshUrl String
+  accessUrl  String?
+  season     Int?
+  episode    Int?
+  audio      Audio
+  series     Series   @relation(fields: [seriesId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  seriesId   Int
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([season, episode])
+  @@map("series_streams")
 }

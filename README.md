@@ -1,30 +1,30 @@
 ![REFLUX](https://raw.githubusercontent.com/Nightfruit/reflux/main/public/images/banner.png)
 
-# Reflux - Stremio Addon
+# Reflux - Addon para Stremio
 
-Reflux is a Stremio addon that allows users to access a huge catalog of movies and tv shows, providing a quick and easy way to watch wherever you are!
+O Reflux é um addon para Stremio que permite aos usuários acessar um enorme catálogo de filmes e séries, oferecendo uma maneira rápida e fácil de assistir onde quer que você esteja!
 
-## Installation
+## Instalação
 
-To install the Reflux addon, simply add the following link to your Stremio addons:
+Para instalar o addon Reflux, basta adicionar o seguinte link aos seus addons do Stremio:
 
 `https://rx.postclub.me/manifest.json`
 
-## Features
+## Funcionalidades
 
-- Access to a huge content from the **Rede Canais**, **Vizer (upcoming)** and several websites!
-- Enjoy a seamless and simple way to watch your favorite shows and movies.
+* Acesso a um enorme conteúdo da **Rede Canais**, **Vizer (em breve)** e vários sites!
+* Aproveite uma forma simples e prática de assistir suas séries e filmes favoritos.
 
-## Contributing
+## Contribuindo
 
-We welcome contributions to improve Reflux! If you want to contribute, feel free to open an issue or pull request. You can also help by reporting bugs, suggesting new features, or providing feedback.
+Contribuições para melhorar o Reflux são muito bem-vindas! Se quiser ajudar, fique à vontade para abrir uma issue ou pull request. Você também pode ajudar reportando bugs, sugerindo novos recursos ou enviando feedback.
 
-## Reporting Issues
+## Relato de Problemas
 
-If you encounter any bugs, issues with content, or have any other concerns, please feel free to reach out. You can contact me directly via Instagram at [@mrsev7en](https://www.instagram.com/mrsev7en).
+Se encontrar algum bug, problema com conteúdo ou tiver outras preocupações, sinta-se à vontade para entrar em contato. Você pode falar diretamente comigo pelo Instagram em [@mrsev7en](https://www.instagram.com/mrsev7en).
 
-I appreciate your support and any feedback to help improve the addon!
+Agradeço pelo apoio e qualquer feedback para ajudar a melhorar o addon!
 
-## License
+## Licença
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/Nightfruit/reflux/blob/main/LICENSE) file for details.
+Este projeto está licenciado sob a Licença MIT — veja o arquivo [LICENSE](https://github.com/Nightfruit/reflux/blob/main/LICENSE) para mais detalhes.

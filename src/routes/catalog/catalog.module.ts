@@ -1,12 +1,10 @@
-import { PrismaModule } from '@/modules/prisma/prisma.module';
-import { ProviderModule } from '@/modules/provider/provider.module';
+import { ProvidersModule } from '@/modules/providers/providers.module';
+import { StremioModule } from '@/modules/stremio/stremio.module';
 import { CatalogController } from '@/routes/catalog/catalog.controller';
-import { CatalogService } from '@/routes/catalog/catalog.service';
 import { Module } from '@nestjs/common';
 
 @Module({
-  imports: [PrismaModule, ProviderModule],
+  imports: [ProvidersModule, StremioModule],
   controllers: [CatalogController],
-  providers: [CatalogService],
 })
 export class CatalogModule {}

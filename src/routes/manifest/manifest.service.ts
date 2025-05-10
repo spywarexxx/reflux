@@ -1,61 +1,82 @@
-import { Media } from '@/enums/media';
-import { PrismaRepository } from '@/modules/prisma/prisma.repository';
-import { Trending } from '@/modules/tmdb/types/tmdb';
-import { convertTrendingToString } from '@/modules/tmdb/utils/string';
-import { convertMediaToStremio } from '@/utils/string';
+import { PrismaService } from '@/modules/prisma/prisma.service';
+import { ProvidersTrendingService } from '@/modules/providers/services/trending.service';
+import { TrendingType } from '@/modules/tmdb/types/tmdb';
 import { Injectable } from '@nestjs/common';
-import { Genre } from '@prisma/client';
 
 @Injectable()
 export class ManifestService {
-  private readonly options = [
-    {
-      name: 'genre',
-      isRequired: false,
-      options: [],
-      optionsLimit: 1,
-    },
-    {
-      name: 'skip',
-      isRequired: false,
-      options: [],
-      optionsLimit: 1,
-    },
-    {
-      name: 'search',
-      isRequired: false,
-      options: [],
-      optionsLimit: 1,
-    },
-  ];
-
-  public constructor(private readonly prismaRepository: PrismaRepository) {}
-
-  public async onModuleInit(): Promise<void> {
-    const genres = await this.getGenres();
-    const formatted = genres.map((genre) => genre.name);
-    const option = this.options.findIndex((option) => option.name === 'genre');
-
-    this.options[option].options = formatted;
-  }
+  public constructor(
+    private readonly prismaService: PrismaService,
+    private readonly providersTrendingService: ProvidersTrendingService,
+  ) {}
 
   public async getCatalogs() {
-    const types = Object.values(Media);
-    const trendings = Object.values(Trending);
+    const types = ['movie', 'series'];
+    const trendings = Object.values(TrendingType);
 
-    const list = types.flatMap((type) =>
-      trendings.flatMap((trending) => ({
-        id: `reflux.${trending}`,
-        type: convertMediaToStremio(type),
-        name: `Reflux - ${convertTrendingToString(trending)}`,
-        extra: this.options,
-      })),
+    const catalogs = await Promise.all(
+      types.map(async (type) => {
+        const catalogsForType = await Promise.all(
+          trendings.map(async (trending) => {
+            const extra = [
+              {
+                name: 'skip',
+                isRequired: false,
+                options: [],
+                optionsLimit: 1,
+              },
+              {
+                name: 'search',
+                isRequired: false,
+                options: [],
+                optionsLimit: 1,
+              },
+            ];
+
+            switch (type) {
+              case 'movie':
+                extra.push(await this.getMovieGenres());
+                break;
+
+              case 'series':
+                extra.push(await this.getSeriesGenres());
+                break;
+            }
+
+            return {
+              type,
+              id: `reflux.${trending}`,
+              name: `Reflux - ${this.providersTrendingService.convertTrendingToString(trending)}`,
+              extra,
+            };
+          }),
+        );
+        return catalogsForType;
+      }),
     );
 
-    return list;
+    return catalogs.flat();
   }
 
-  private async getGenres(): Promise<Genre[]> {
-    return this.prismaRepository.getGenres();
+  private async getMovieGenres() {
+    const genres = await this.prismaService.movieGenre.findMany();
+
+    return {
+      name: 'genre',
+      isRequired: false,
+      optionsLimit: 1,
+      options: genres.map((genre) => genre.name),
+    };
+  }
+
+  private async getSeriesGenres() {
+    const genres = await this.prismaService.seriesGenre.findMany();
+
+    return {
+      name: 'genre',
+      isRequired: false,
+      optionsLimit: 1,
+      options: genres.map((genre) => genre.name),
+    };
   }
 }
